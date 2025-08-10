@@ -1,0 +1,122 @@
+<div class="container py-4">
+  <!-- ===============================
+       Page Title
+       ===============================
+       Short, catchy headline for the search page.
+       The `brand-title` class applies consistent brand font/color.
+  -->
+  <h2 class="brand-title mb-4 text-center">Find Your Perfect Stay</h2>
+
+  <!-- ===============================
+       Search Bar Section
+       ===============================
+       - Two-column layout: text input + search button
+       - Supports Enter key trigger in addition to button click
+       - ngModel binds the searchTerm for two-way data binding
+       - search() filters results in component logic
+  -->
+  <div class="search-bar mb-5">
+    <input 
+      type="text" 
+      class="form-control search-input" 
+      placeholder="Search hotels by name or location..."
+      [(ngModel)]="searchTerm" 
+      (keyup.enter)="search()">
+      
+    <button 
+      class="btn btn-brand" 
+      (click)="search()">
+      Search
+    </button>
+  </div>
+
+  <!-- ===============================
+       Search Results Grid
+       ===============================
+       - Responsive grid using Bootstrap row/col classes
+       - Each hotel is displayed as a card with:
+         • Image
+         • Basic details (name, provider, location)
+         • "View Details" action button
+       - Cards are equal height (`h-100`) with flex layout for spacing
+  -->
+  <div class="row g-4">
+    <div 
+      class="col-md-4 col-sm-6" 
+      *ngFor="let hotel of pagedHotels">
+      
+      <div class="hotel-card shadow-sm h-100 d-flex flex-column">
+        
+        <!-- Hotel image area -->
+        <div class="hotel-image">
+          <img [src]="hotel.image" alt="{{hotel.name}}">
+        </div>
+
+        <!-- Text details: grows to fill space before button -->
+        <div class="hotel-info p-3 flex-grow-1">
+          <h5 class="hotel-name">{{ hotel.name }}</h5>
+          <p class="text-muted mb-1">
+            <strong>Provider:</strong> {{ hotel.provider }}
+          </p>
+          <p class="text-muted mb-3">
+            <i class="fas fa-map-marker-alt"></i> {{ hotel.location }}
+          </p>
+        </div>
+
+        <!-- Call-to-action button anchored at card bottom -->
+        <div class="p-3">
+          <button 
+            class="btn btn-primary w-100" 
+            (click)="goToHotelDetail(hotel.id)">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===============================
+       Pagination
+       ===============================
+       - Visible only if more than 1 page of results
+       - Allows previous/next navigation and direct page jumps
+       - Disables prev/next when at boundaries
+  -->
+  <nav *ngIf="totalPages > 1" class="mt-4">
+    <ul class="pagination justify-content-center">
+      
+      <!-- Previous -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a 
+          class="page-link" 
+          href="javascript:void(0)" 
+          (click)="setPage(currentPage - 1)">
+          Previous
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      <li 
+        class="page-item" 
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        [class.active]="i + 1 === currentPage">
+        <a 
+          class="page-link" 
+          href="javascript:void(0)" 
+          (click)="setPage(i + 1)">
+          {{ i + 1 }}
+        </a>
+      </li>
+
+      <!-- Next -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a 
+          class="page-link" 
+          href="javascript:void(0)" 
+          (click)="setPage(currentPage + 1)">
+          Next
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,246 @@
+/* ========================================================================
+   GLOBAL STYLES & VARIABLES
+   Author: Meherkumar
+   Description: Centralized style definitions for search & detail pages
+   ======================================================================== */
+
+/* ----- Brand Palette ----- 
+   Using SCSS variables for easy color management and theming.
+   These can be reused across components to ensure design consistency.
+*/
+$brand-blue: #007bff;
+$brand-green: #28a745;
+$brand-orange: #ffc107;
+$brand-red: #dc3545;
+$brand-gray: #6c757d;
+$sky-blue: #4daff7;
+
+/* ----- Base Reset & Typography -----
+   Setting a light neutral background for the app and a modern, legible font.
+*/
+body {
+  background: #f4f6f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* ========================================================================
+   SEARCH PAGE STYLES
+   ======================================================================== */
+
+/* ----- Title Styling ----- */
+.brand-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: $brand-blue;
+}
+
+/* ----- Search Bar Layout ----- 
+   Flex layout ensures input and button stay aligned.
+   Gap for breathing space between elements.
+*/
+.search-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .search-input {
+    flex: 1;
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid #e0e6ea;
+    background: white;
+    transition: box-shadow 0.15s ease;
+  }
+
+  .btn-brand {
+    background-color: $brand-blue;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 18px;
+    border: none;
+  }
+}
+
+/* ----- Hotel Card ----- 
+   Slightly rounded corners with subtle shadow hover effect.
+*/
+.hotel-card {
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.hotel-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(13, 38, 59, 0.08);
+}
+
+/* Image section of the hotel card */
+.hotel-image {
+  height: 200px;
+  overflow: hidden;
+  background: #eee;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ensures no distortion */
+    transition: transform 0.35s ease;
+  }
+}
+.hotel-card:hover .hotel-image img {
+  transform: scale(1.04); /* slight zoom effect on hover */
+}
+
+/* Hotel Info Section */
+.hotel-info {
+  padding: 14px 16px;
+}
+.hotel-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* Pagination gutter fix for consistent spacing */
+.row.g-4 {
+  --bs-gutter-x: 1.25rem !important;
+  --bs-gutter-y: 1.25rem !important;
+}
+
+/* ========================================================================
+   HOTEL DETAIL PAGE STYLES
+   ======================================================================== */
+
+/* Centering & max-width for comfortable reading on large screens */
+.hotel-detail-page {
+  margin: 0 auto;
+  max-width: 1400px;
+  padding: 0 18px 2rem;
+}
+
+/* ----- Back Button ----- */
+.btn-back {
+  background-color: $sky-blue;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  &:hover {
+    background-color: darken($sky-blue, 5%);
+  }
+}
+
+/* ----- Header Section ----- */
+.hotel-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+}
+.hotel-avatar {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid $brand-blue;
+}
+
+/* ----- Card Styling ----- */
+.card {
+  border-radius: 8px;
+  border: none;
+}
+.card-header {
+  background: #f7f9fb;
+  font-weight: 700;
+  color: #2b3b4a;
+}
+
+/* ----- Stat Tile Row ----- 
+   Flexible grid layout with consistent gap
+*/
+.tile-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* ----- Individual Stat Tile ----- 
+   Filled style tiles for a strong visual highlight.
+*/
+.tile-card {
+  flex: 1 1 calc(33.333% - 16px);
+  border-radius: 8px;
+  padding: 14px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(9, 30, 57, 0.04);
+}
+.tile-card h6 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: rgba(255,255,255,0.95);
+}
+.tile-card p {
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ----- Color Variants for Tiles ----- */
+.tile-primary { background: $brand-blue; }
+.tile-success { background: $brand-green; }
+.tile-warning { background: $brand-orange; color: #222; }
+.tile-info { background: $sky-blue; }
+.tile-danger { background: $brand-red; }
+.tile-secondary { background: $brand-gray; }
+
+/* ----- Special Cases ----- */
+.card .card-body.p-0 { padding: 0; }
+.card .card-body { background: #fff; }
+
+/* ----- Responsive Tweaks ----- */
+@media (max-width: 991px) {
+  .hotel-avatar { width: 64px; height: 64px; }
+  .tile-card { padding: 10px; flex: 1 1 calc(50% - 12px); }
+}
+
+/* ----- Map Sizing Fix ----- */
+agm-map {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ----- Chart Legend Size Adjustment ----- */
+:root {
+  --chart-legend-font-size: 12px;
+}
+
+/* ----- Info Update Toast ----- */
+.custom-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #4daff7;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-weight: 500;
+  z-index: 2000;
+  animation: fadeInOut 2.5s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}

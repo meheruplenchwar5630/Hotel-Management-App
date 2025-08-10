@@ -1,0 +1,223 @@
+<!-- ========================================================= -->
+<!--  Inline Toast Notification
+      Purpose:
+      - Gives the user immediate feedback after save actions (Address / Basic Info updates).
+      - Auto-hides after a short delay (handled in component.ts).
+      Styling:
+      - Positioned absolutely via .custom-toast CSS.
+-->
+<!-- ========================================================= -->
+<div *ngIf="showToast" class="custom-toast">
+  {{ toastMessage }}
+</div>
+
+<!-- ========================================================= -->
+<!--  Loader Section (Shown during async fetch from HotelService)
+      UX Decision:
+      - Full height vertical/horizontal centering so the spinner is in focus.
+      - Spinner size increased slightly for visibility.
+-->
+<!-- ========================================================= -->
+<div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!--  Main Hotel Detail Page Wrapper
+      Rendered only when:
+      1) We are not loading.
+      2) Hotel object is present.
+      This ensures we never hit undefined bindings.
+-->
+<!-- ========================================================= -->
+<div class="hotel-detail-page container mt-4" *ngIf="!loading && hotel">
+
+  <!-- Back Button (keeps navigation flow consistent) -->
+  <div class="mb-3">
+    <button class="btn-back shadow-sm" (click)="goBack()">← Back to Search</button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- Header Section: Displays Hotel Image, Name, and Provider
+       - Uses flex for horizontal alignment.
+       - Image falls back to Unsplash placeholder if missing.
+  -->
+  <!-- ========================================================= -->
+  <div class="hotel-header bg-white shadow-sm rounded p-3 mb-3 d-flex align-items-center">
+    <img [src]="hotel.image || 'https://source.unsplash.com/160x160/?hotel,building,resort'" 
+         class="hotel-avatar me-3" alt="{{ hotel.name }}">
+    <div>
+      <h3 class="mb-2">{{ hotel.name }}</h3>
+      <div class="text-muted fs-6">Provider: {{ hotel.provider }}</div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- Tab Navigation:
+       - List is generated dynamically from a hardcoded array.
+       - activeTab state controls which content block is visible.
+  -->
+  <!-- ========================================================= -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item" *ngFor="let tab of ['Home','About','Classification','Products','Terms','Finance','Notes']">
+      <a class="nav-link" href="javascript:void(0)" 
+         [class.active]="activeTab === tab" 
+         (click)="setActiveTab(tab)">
+        {{ tab }}
+      </a>
+    </li>
+  </ul>
+
+  <!-- ========================================================= -->
+  <!-- HOME TAB CONTENT
+       - Split into 3 columns (Address/Info, Stats/Chart, Map)
+       - Uses Bootstrap grid for responsiveness.
+  -->
+  <!-- ========================================================= -->
+  <div *ngIf="activeTab === 'Home'" class="row g-3">
+    
+    <!-- LEFT COLUMN -->
+    <div class="col-lg-3">
+
+      <!-- Address Card (Inline Edit) -->
+      <div class="card shadow-sm mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          📍 Address
+          <button class="btn btn-sm btn-outline-primary" (click)="toggleEditAddress()">
+            {{ editAddressMode ? 'Cancel' : 'Edit' }}
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- View Mode -->
+          <div *ngIf="!editAddressMode">
+            <p class="mb-1">{{ hotel.street }}, {{ hotel.state }}, {{ hotel.country }} - {{ hotel.pincode }}</p>
+            <p class="mb-1">📧 {{ hotel.email }}</p>
+            <p class="mb-0">📞 {{ hotel.phone }}</p>
+          </div>
+          <!-- Edit Mode -->
+          <div *ngIf="editAddressMode">
+            <input class="form-control mb-2" [(ngModel)]="hotel.street" placeholder="Street">
+            <input class="form-control mb-2" [(ngModel)]="hotel.state" placeholder="State">
+            <input class="form-control mb-2" [(ngModel)]="hotel.pincode" placeholder="Pincode">
+            <input class="form-control mb-2" [(ngModel)]="hotel.email" placeholder="Email">
+            <input class="form-control mb-2" [(ngModel)]="hotel.phone" placeholder="Phone">
+            <button class="btn btn-success btn-sm mt-2" (click)="saveAddress()">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Info Card (Inline Edit) -->
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          ℹ️ Basic Info
+          <button class="btn btn-sm btn-outline-primary" (click)="toggleEditInfo()">
+            {{ editInfoMode ? 'Cancel' : 'Edit' }}
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- View Mode -->
+          <div *ngIf="!editInfoMode">
+            <p><strong>Short Name:</strong> {{ hotel.shortName }}</p>
+            <p><strong>ID:</strong> {{ hotel.id }}</p>
+            <p><strong>Type:</strong> {{ hotel.type }}</p>
+            <p><strong>Currency:</strong> {{ hotel.currency }}</p>
+            <p><strong>Location:</strong> {{ hotel.location }}</p>
+          </div>
+          <!-- Edit Mode -->
+          <div *ngIf="editInfoMode">
+            <input class="form-control mb-2" [(ngModel)]="hotel.shortName" placeholder="Short Name">
+            <input class="form-control mb-2" [(ngModel)]="hotel.type" placeholder="Type">
+            <input class="form-control mb-2" [(ngModel)]="hotel.currency" placeholder="Currency">
+            <input class="form-control mb-2" [(ngModel)]="hotel.location" placeholder="Location">
+            <button class="btn btn-success btn-sm mt-2" (click)="saveInfo()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE COLUMN: KPI Tiles + Bookings Chart -->
+    <div class="col-lg-6">
+      <!-- Stat tiles row -->
+      <div class="tile-row mb-3">
+        <div class="tile-card tile-{{widget.color}}" *ngFor="let widget of statWidgets">
+          <h6>{{ widget.label }}</h6>
+          <p class="mb-0">{{ widget.value }}</p>
+        </div>
+      </div>
+      <!-- Chart.js bar chart -->
+      <div class="card shadow-sm">
+        <div class="card-header">📊 Booking Overview</div>
+        <div class="card-body" style="min-height:320px;">
+          <canvas baseChart
+            [datasets]="barChartData"
+            [labels]="barChartLabels"
+            [options]="barChartOptions"
+            [legend]="barChartLegend"
+            [chartType]="barChartType">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Google Map -->
+    <div class="col-lg-3">
+      <div class="card shadow-sm">
+        <div class="card-header">🗺 Location</div>
+        <div class="card-body p-0" style="height: 320px;">
+          <agm-map [latitude]="hotel.latitude" [longitude]="hotel.longitude" [zoom]="14">
+            <agm-marker [latitude]="hotel.latitude" [longitude]="hotel.longitude"></agm-marker>
+          </agm-map>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- OTHER TABS: Simple conditional renders based on activeTab -->
+  <!-- ========================================================= -->
+  <div *ngIf="activeTab === 'About'" class="card shadow-sm p-3">
+    <p>{{ hotel.about }}</p>
+  </div>
+
+  <div *ngIf="activeTab === 'Classification'" class="card shadow-sm p-3">
+    <p><strong>Stars:</strong> {{ hotel.classification?.stars }}</p>
+    <p><strong>Category:</strong> {{ hotel.classification?.category }}</p>
+    <p><strong>Rooms:</strong> {{ hotel.classification?.rooms }}</p>
+    <p><strong>Facilities:</strong> {{ hotel.classification?.facilities?.join(', ') }}</p>
+  </div>
+
+  <div *ngIf="activeTab === 'Products'" class="card shadow-sm p-3">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>Product</th><th>Price</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of hotel.products">
+          <td>{{ p.name }}</td>
+          <td>{{ p.price }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="activeTab === 'Terms'" class="card shadow-sm p-3">
+    <p>{{ hotel.terms }}</p>
+  </div>
+
+  <div *ngIf="activeTab === 'Finance'" class="tile-row">
+    <div class="tile-card tile-{{item.color}}" *ngFor="let item of [
+      {label: 'Total Revenue', value: hotel.finance?.totalRevenue, color:'success'},
+      {label: 'Total Expenses', value: hotel.finance?.totalExpenses, color:'danger'},
+      {label: 'Profit Margin', value: hotel.finance?.profitMargin, color:'info'}
+    ]">
+      <h6>{{ item.label }}</h6>
+      <p class="mb-0">{{ item.value }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'Notes'" class="card shadow-sm p-3">
+    <p>{{ hotel.notes }}</p>
+  </div>
+</div>
