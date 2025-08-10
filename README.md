@@ -1,27 +1,54 @@
-# HotelApp
+# 🏨 Hotel Management Dashboard
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.19.
+An **Angular-based hotel management application** for browsing, viewing, and managing hotel details.  
+Includes **interactive maps**, **booking analytics**, and **inline editing** for hotel information.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## 🚀 Features
 
-## Code scaffolding
+- **Hotel Search & Listing**
+  - Search hotels with filters
+  - Responsive hotel cards with hover effects
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **Hotel Detail View**
+  - Address & basic info with edit functionality
+  - KPI/stat widgets (Last Used, Upcoming Bookings, Complaints, Payments)
+  - Monthly booking overview chart
+  - Google Maps location marker
 
-## Build
+- **Tabs for Organized Info**
+  - Home, About, Classification, Products, Terms, Finance, Notes
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+- **Data**
+  - Auto-generated hotel dataset using Node.js script
+  - Curated royalty-free hotel images
 
-## Running unit tests
+- **UI/UX**
+  - Bootstrap 5 for responsive design
+  - SCSS variables for theme colors
+  - Toast notifications for actions (e.g., Save)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+---
 
-## Running end-to-end tests
+## 🛠 Tech Stack
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+- **Frontend:** Angular 15+, TypeScript, Bootstrap 5, SCSS
+- **Charts:** Chart.js via ng2-charts
+- **Maps:** Angular Google Maps (AGM)
+- **Data Generation:** Node.js (faker/random data)
 
-## Further help
+---
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## 📦 Installation & Setup
+
+```bash
+# Clone the repository
+git clone <git_url>
+cd hotel-app
+
+# Install dependencies
+npm install
+
+# Run the development server
+ng serve
